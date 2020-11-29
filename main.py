@@ -14,10 +14,10 @@ class Settings(QDialog, Ui_Dialog):
     def __init__(self, number, color):
         super().__init__()
         self.setupUi(self)
-        '''try:
+        try:
             self.cap = VideoCapture(number, CAP_DSHOW)
         except Warning:
-            self.cap = VideoCapture(number)'''
+            self.cap = VideoCapture(number)
         self.color = 38
         c = [20, 0, 95, 75, 85, 175]
         if color == 'Blue':
@@ -48,7 +48,7 @@ class Settings(QDialog, Ui_Dialog):
     def valuechange(self):
         print(11)
         self.s[self.z.index(self.sender())].setValue(self.sender().value())
-        #self.run()
+        self.run()
 
     def ret(self):
         print(33)
@@ -58,21 +58,23 @@ class Settings(QDialog, Ui_Dialog):
 
     def run(self):
         print(44)
-        #ret, frame = self.cap.read()
-        frame = imread('Colors.jpg')
+        ret, frame = self.cap.read()
+        start = timeit()
+        #frame = imread('Colors.jpg')
         imgHLS = cvtColor(frame, self.color)
         print((self.z[0].value(), self.z[1].value(), self.z[2].value()),
                        (self.z[3].value(), self.z[4].value(), self.z[5].value()))
         mask = inRange(imgHLS, (self.z[0].value(), self.z[1].value(), self.z[2].value()),
                        (self.z[3].value(), self.z[4].value(), self.z[5].value()))
         mask = bitwise_and(frame, frame, mask=mask)
-        pic = resize(frame, (632, 312), interpolation=INTER_AREA)
+        pic = resize(mask, (632, 312), interpolation=INTER_AREA)
         # imshow("pic", pic)
         convertToQtFormat = QtGui.QImage(pic.data, 632, 312, QtGui.QImage.Format_RGB888)
         convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
         self.label_7.setPixmap(QPixmap(convertToQtFormat))
         #self.show()
-        sleep(1)
+        #sleep(1)
+        print(timeit() - start)
 
 
 class Vision(QWidget, Ui_MainWindow):
@@ -116,7 +118,7 @@ class Vision(QWidget, Ui_MainWindow):
         print("Надеюсь мы не разбились, жду встречи ;)")
 
     def sign(self, occasion=1, time=0):
-        def color(asd):
+        '''def color(asd):
             c = [200, 10, 10, 255, 200, 110]
             if asd == "red_":
                 c = [0, 10, 175, 20, 140, 255]
@@ -173,8 +175,7 @@ class Vision(QWidget, Ui_MainWindow):
         pedestrian_crossing = [True, True, True, True, True, True, False, True, True]
         park = [True, True, True, True, True, True, True, False, False]
         m = ''
-        ma = ''
-        start = timeit()
+        ma = '''
         for i in range(self.i, occasion):
             print(1)
             self.func = self.sign
@@ -229,20 +230,18 @@ class Vision(QWidget, Ui_MainWindow):
             rrb = e("Red")
 
             # putText(frame, m, (50, 40), FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)'''
-            pic = resize(frame, (352, 300), interpolation=INTER_AREA)
+            pic = resize(frame, (352, 300))
             convertToQtFormat = QtGui.QImage(pic.data, 352, 300,
                                              QtGui.QImage.Format_RGB888)
             convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
             self.label.setPixmap(QPixmap(convertToQtFormat))
             self.show()
-
             imshow("pic", pic)
             imshow("Frame", frame)
             # self.out.write(frame)
             if waitKey(1) == ord("q"):
                 break
             sleep(time)
-        print(timeit() - start)
         destroyAllWindows()
         self.i = 0
 
