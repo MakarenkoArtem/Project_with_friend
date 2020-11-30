@@ -44,6 +44,7 @@ class Settings(QWidget, Ui_Dialog):
 
     def ret(self):
         self.play = False
+        self.cap.release()
         self.output = [i.value() for i in self.z]
         if self.sender() == self.pushButton_2:
             self.output = None
@@ -90,7 +91,6 @@ class Vision(QWidget, Ui_MainWindow):
 
     def ret(self):
         self.play = False
-        self.release()
         self.close()
 
     def settings(self):
