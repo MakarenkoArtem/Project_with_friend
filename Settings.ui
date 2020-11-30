@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
+    <width>609</width>
     <height>589</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>20</x>
      <y>240</y>
-     <width>632</width>
+     <width>571</width>
      <height>312</height>
     </rect>
    </property>
@@ -46,7 +46,7 @@ color: rgb(0, 255, 0);</string>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>520</x>
      <y>562</y>
      <width>75</width>
      <height>23</height>
@@ -61,7 +61,7 @@ color: rgb(0, 255, 0);</string>
     <rect>
      <x>80</x>
      <y>90</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>
@@ -97,7 +97,7 @@ color: rgb(255, 0, 0);</string>
     <rect>
      <x>80</x>
      <y>130</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>
@@ -128,7 +128,7 @@ selection-background-color: rgb(255, 0, 0);</string>
     <rect>
      <x>80</x>
      <y>50</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>
@@ -154,7 +154,7 @@ selection-background-color: rgb(255, 0, 0);</string>
   <widget class="QSpinBox" name="spinBox">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>10</y>
      <width>42</width>
      <height>22</height>
@@ -214,7 +214,7 @@ color: rgb(255, 0, 0);</string>
   <widget class="QSpinBox" name="spinBox_4">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>130</y>
      <width>42</width>
      <height>22</height>
@@ -227,7 +227,7 @@ color: rgb(255, 0, 0);</string>
   <widget class="QSpinBox" name="spinBox_2">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>50</y>
      <width>42</width>
      <height>22</height>
@@ -254,12 +254,12 @@ color: rgb(0, 0, 255);</string>
     <string>min_blue</string>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider_6">
+  <widget class="QSlider" name="horizontalSlider_5">
    <property name="geometry">
     <rect>
      <x>80</x>
      <y>170</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>
@@ -285,7 +285,7 @@ color: rgb(0, 0, 255);</string>
   <widget class="QSpinBox" name="spinBox_6">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>210</y>
      <width>42</width>
      <height>22</height>
@@ -295,12 +295,12 @@ color: rgb(0, 0, 255);</string>
     <number>255</number>
    </property>
   </widget>
-  <widget class="QSlider" name="horizontalSlider_5">
+  <widget class="QSlider" name="horizontalSlider_6">
    <property name="geometry">
     <rect>
      <x>80</x>
      <y>210</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>
@@ -317,7 +317,7 @@ color: rgb(0, 0, 255);</string>
   <widget class="QSpinBox" name="spinBox_5">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>170</y>
      <width>42</width>
      <height>22</height>
@@ -330,7 +330,7 @@ color: rgb(0, 0, 255);</string>
   <widget class="QSpinBox" name="spinBox_3">
    <property name="geometry">
     <rect>
-     <x>620</x>
+     <x>560</x>
      <y>90</y>
      <width>42</width>
      <height>22</height>
@@ -345,7 +345,7 @@ color: rgb(0, 0, 255);</string>
     <rect>
      <x>80</x>
      <y>10</y>
-     <width>521</width>
+     <width>471</width>
      <height>19</height>
     </rect>
    </property>

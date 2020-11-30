@@ -10,8 +10,8 @@ from Settings import Ui_Dialog
 from time import sleep
 
 
-class Settings(QDialog, Ui_Dialog):
-    def __init__(self, number, color):
+class Settings(QWidget, Ui_Dialog):
+    def __init__(self, number, color, colors):
         super().__init__()
         self.setupUi(self)
         try:
@@ -19,62 +19,56 @@ class Settings(QDialog, Ui_Dialog):
         except Warning:
             self.cap = VideoCapture(number)
         self.color = 38
-        c = [20, 0, 95, 75, 85, 175]
         if color == 'Blue':
             self.color = 51
-            c = [50, 15, 10, 130, 70, 70]
-        print(color)
+        self.play = True
         self.setWindowTitle(color)
-        print(2)
-        self.pushButton_2.clicked.connect(self.close)
+        self.pushButton_2.clicked.connect(self.ret)
         self.pushButton.clicked.connect(self.ret)
         self.s = [self.spinBox, self.spinBox_2, self.spinBox_3, self.spinBox_4, self.spinBox_5,
                   self.spinBox_6]
         self.z = [self.horizontalSlider, self.horizontalSlider_2, self.horizontalSlider_3,
                   self.horizontalSlider_4, self.horizontalSlider_5, self.horizontalSlider_6]
         for i in range(6):
-            self.z[i].setValue(c[i])
+            self.z[i].setValue(colors[i])
             self.z[i].valueChanged.connect(self.valuechange)
-            self.s[i].setValue(c[i])
+            self.s[i].setValue(colors[i])
             self.s[i].valueChanged.connect(self.valuechangespin)
-        print(2)
         self.run()
 
     def valuechangespin(self):
-        print(22)
         self.z[self.s.index(self.sender())].setValue(self.sender().value())
-        self.run()
 
     def valuechange(self):
-        print(11)
         self.s[self.z.index(self.sender())].setValue(self.sender().value())
-        self.run()
 
     def ret(self):
-        print(33)
-        self.cap.release()
-        # return [i.value() for i in self.z]
+        self.play = False
+        self.output = [i.value() for i in self.z]
+        if self.sender() == self.pushButton_2:
+            self.output = None
         self.close()
 
     def run(self):
-        print(44)
-        ret, frame = self.cap.read()
-        start = timeit()
-        #frame = imread('Colors.jpg')
-        imgHLS = cvtColor(frame, self.color)
-        print((self.z[0].value(), self.z[1].value(), self.z[2].value()),
-                       (self.z[3].value(), self.z[4].value(), self.z[5].value()))
-        mask = inRange(imgHLS, (self.z[0].value(), self.z[1].value(), self.z[2].value()),
-                       (self.z[3].value(), self.z[4].value(), self.z[5].value()))
-        mask = bitwise_and(frame, frame, mask=mask)
-        pic = resize(mask, (632, 312), interpolation=INTER_AREA)
-        # imshow("pic", pic)
-        convertToQtFormat = QtGui.QImage(pic.data, 632, 312, QtGui.QImage.Format_RGB888)
-        convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
-        self.label_7.setPixmap(QPixmap(convertToQtFormat))
-        #self.show()
-        #sleep(1)
-        print(timeit() - start)
+        while self.play:
+            ret, frame = self.cap.read()
+            imgHLS = cvtColor(frame, self.color)
+            print((self.z[0].value(), self.z[1].value(), self.z[2].value()),
+                  (self.z[3].value(), self.z[4].value(), self.z[5].value()))
+            mask = inRange(imgHLS, (self.z[0].value(), self.z[1].value(), self.z[2].value()),
+                           (self.z[3].value(), self.z[4].value(), self.z[5].value()))
+            mask = bitwise_and(frame, frame, mask=mask)
+            pic = resize(mask, (632, 312), interpolation=INTER_AREA)
+            pic = cvtColor(pic, COLOR_BGR2RGB)
+            convertToQtFormat = QtGui.QImage(pic.data, 632, 312, QtGui.QImage.Format_RGB888)
+            convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
+            self.label_7.setPixmap(QPixmap(convertToQtFormat))
+            self.show()
+            # self.out.write(frame)
+            if waitKey(1) == ord("q"):
+                pass
+            # sleep(0)
+        destroyAllWindows()
 
 
 class Vision(QWidget, Ui_MainWindow):
@@ -86,29 +80,33 @@ class Vision(QWidget, Ui_MainWindow):
         except Warning:
             self.cap = VideoCapture(number)
         self.number = number
-        self.pushButton_3.clicked.connect(self.close)
+        self.pushButton_3.clicked.connect(self.ret)
         self.pushButton.clicked.connect(self.settings)
         self.pushButton_2.clicked.connect(self.settings)
         self.i = 0
+        self.red, self.blue = [50, 15, 10, 130, 70, 70], [0, 10, 175, 20, 140, 255]
         self.func = None
-        '''self.setGeometry(100, 100, 370, 330)
-        self.setWindowTitle('Изменение прозрачности')
-        self.image = QLabel(self)
-        self.image.move(50, 15)
-        self.image.resize(300, 300)'''
+        self.play = True
+
+    def ret(self):
+        self.play = False
+        self.release()
+        self.close()
 
     def settings(self):
-        c = 'Red'
+        self.cap.release()
+        c, cl = 'Red', self.red
         if self.sender() == self.pushButton_2:
-            c = 'Blue'
-        print(1)
-        # ap = QApplication(sys.argv)
-        f = Settings(self.number, c).exec_()
-        # f.run()
-        # ap.exec_()
-        # ap.exec()
-        print(2222222)
-        self.func(1000)
+            c, cl = 'Blue', self.blue
+        f = Settings(self.number, c, cl)  # .exec_()
+        if self.sender() == self.pushButton_2 and f.output is not None:
+            self.blue = f.output
+        elif f.output is not None:
+            self.red = f.output
+        try:
+            self.cap = VideoCapture(self.number, CAP_DSHOW)
+        except Warning:
+            self.cap = VideoCapture(self.number)
 
     def release(self):
         # self.out.release()
@@ -118,10 +116,18 @@ class Vision(QWidget, Ui_MainWindow):
         print("Надеюсь мы не разбились, жду встречи ;)")
 
     def sign(self, occasion=1, time=0):
-        '''def color(asd):
-            c = [200, 10, 10, 255, 200, 110]
-            if asd == "red_":
-                c = [0, 10, 175, 20, 140, 255]
+        def color(frame, asd):
+            c = self.blue
+            if asd == "red":
+                c = self.red
+            pic = blur(frame, (4, 4))
+            pic = GaussianBlur(pic, (3, 3), 0)
+            pic = erode(pic, (5, 5), iterations=3)
+            pic = dilate(pic, (4, 4), iterations=2)
+            pic = inRange(pic, (c[0], c[1], c[2]), (c[3], c[4], c[5]))
+            return pic
+
+        '''
             r = ["minb", "ming", "minr", "maxb", "maxg", "maxr"]
 
             def nothing(x):
@@ -176,11 +182,12 @@ class Vision(QWidget, Ui_MainWindow):
         park = [True, True, True, True, True, True, True, False, False]
         m = ''
         ma = '''
+        # self.func = self.sign
+        print(occasion)
         for i in range(self.i, occasion):
-            print(1)
-            self.func = self.sign
-            print(2)
-            ret, frame = self.cap.read()
+            print(self.red, self.blue)
+            if not self.play:
+                break
             '''if not ret:
                 continue
             print(i)
@@ -193,11 +200,6 @@ class Vision(QWidget, Ui_MainWindow):
                     c = b
                     rnt = bn
                     colo = (255, 0, 0)
-                ra = blur(frame, (5, 5))
-                ra = GaussianBlur(ra, (3, 3), 0)
-                ra = erode(ra, (6, 6), iterations=3)
-                ra = dilate(ra, (5, 5), iterations=2)
-                ra = inRange(ra, (c[0], c[1], c[2]), (c[3], c[4], c[5]))
                 # imshow(ca, ra)
                 contours = findContours(ra, RETR_TREE, CHAIN_APPROX_NONE)
                 contours = contours[0]  # or [1] в линуксе на ноуте
@@ -230,19 +232,34 @@ class Vision(QWidget, Ui_MainWindow):
             rrb = e("Red")
 
             # putText(frame, m, (50, 40), FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)'''
-            pic = resize(frame, (352, 300))
-            convertToQtFormat = QtGui.QImage(pic.data, 352, 300,
-                                             QtGui.QImage.Format_RGB888)
-            convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
-            self.label.setPixmap(QPixmap(convertToQtFormat))
-            self.show()
-            imshow("pic", pic)
-            imshow("Frame", frame)
+            # self.func = self.sign
+            ret, frame = self.cap.read()
+            print(i)
+            try:
+                pic = resize(frame, (352, 300))
+                pic = cvtColor(pic, COLOR_BGR2RGB)
+                convertToQtFormat = QtGui.QImage(pic.data, 352, 300,
+                                                 QtGui.QImage.Format_RGB888)
+                convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
+                self.label.setPixmap(QPixmap(convertToQtFormat))
+                pic = color(frame, 'blue') + color(frame, 'red')
+                pic = bitwise_and(frame, frame, mask=pic)
+                pic = resize(pic, (352, 300))
+                pic = cvtColor(pic, COLOR_BGR2RGB)
+                convertToQtFormat = QtGui.QImage(pic.data, 352, 300,
+                                                 QtGui.QImage.Format_RGB888)
+                convertToQtFormat = QtGui.QPixmap.fromImage(convertToQtFormat)
+                self.label_3.setPixmap(QPixmap(convertToQtFormat))
+                self.show()
+            except Exception:
+                pass
+            # imshow("Frame", frame)
             # self.out.write(frame)
             if waitKey(1) == ord("q"):
-                break
+                pass
             sleep(time)
         destroyAllWindows()
+        self.func = None
         self.i = 0
 
 
