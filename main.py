@@ -53,6 +53,8 @@ class Settings(QWidget, Ui_Dialog):
     def run(self):
         while self.play:
             ret, frame = self.cap.read()
+            if not ret:
+                frame = imread('Colors.jpg')
             imgHLS = cvtColor(frame, self.color)
             print((self.z[0].value(), self.z[1].value(), self.z[2].value()),
                   (self.z[3].value(), self.z[4].value(), self.z[5].value()))
@@ -234,7 +236,10 @@ class Vision(QWidget, Ui_MainWindow):
             # putText(frame, m, (50, 40), FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)'''
             # self.func = self.sign
             ret, frame = self.cap.read()
-            print(i)
+            print(ret)
+            if not ret:
+                frame = imread('Colors.jpg')
+            print(1)
             try:
                 pic = resize(frame, (352, 300))
                 pic = cvtColor(pic, COLOR_BGR2RGB)
